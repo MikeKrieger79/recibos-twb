@@ -25,13 +25,13 @@
             <h2>THE WARRIOR BROTHERS</h2>
         </div>
         <div class="grid">
-            <div class="full-width"><label>Nombre del Cliente:</label><input type="text" id="cliente"></div>
+            <div class="full-width"><label>Cliente:</label><input type="text" id="cliente"></div>
             <div><label>WhatsApp:</label><input type="text" id="tel"></div>
-            <div><label>Entrega Estimada:</label><input type="date" id="fecha"></div>
+            <div><label>Entrega:</label><input type="date" id="fecha"></div>
             <div class="full-width"><label>Artículo:</label><input type="text" id="articulo"></div>
             <div class="full-width"><label>Trabajo:</label><input type="text" id="trabajo"></div>
-            <div><label>Total ($):</label><input type="number" id="total" value="0.00" step="0.01"></div>
-            <div><label>Abono ($):</label><input type="number" id="abono" value="0.00" step="0.01"></div>
+            <div><label>Total:</label><input type="number" id="total" value="0.00" step="0.01"></div>
+            <div><label>Abono:</label><input type="number" id="abono" value="0.00" step="0.01"></div>
         </div>
         <button class="btn" onclick="enviar()">GENERAR Y ENVIAR</button>
     </div>
@@ -40,48 +40,48 @@
         document.getElementById('fecha').valueAsDate = new Date();
 
         function enviar() {
-            const cliente = document.getElementById('cliente').value.trim().toUpperCase();
-            const tel = document.getElementById('tel').value.trim();
-            const articulo = document.getElementById('articulo').value.trim().toLowerCase();
-            const trabajo = document.getElementById('trabajo').value.trim();
-            const total = parseFloat(document.getElementById('total').value || 0).toFixed(2);
-            const abono = parseFloat(document.getElementById('abono').value || 0).toFixed(2);
+            const cliente = document.getElementById('cliente').value.toUpperCase();
+            const tel = document.getElementById('tel').value;
+            const articulo = document.getElementById('articulo').value.toLowerCase();
+            const trabajo = document.getElementById('trabajo').value;
+            const total = parseFloat(document.getElementById('total').value).toFixed(2);
+            const abono = parseFloat(document.getElementById('abono').value).toFixed(2);
             const saldo = (total - abono).toFixed(2);
             const fecha = document.getElementById('fecha').value.split('-').reverse().join('/');
 
-            // Emojis en formato seguro para PC y Celular
-            const eEscudo = "🛡️";
-            const eCheck = "✅";
-            const eMartillo = "🛠️";
-            const eBolsa = "💰";
-            const eBillete = "💵";
-            const eTarjeta = "💳";
-            const eCalendario = "📅";
-            const eAlerta = "⚠️";
-            const eChispas = "✨";
-
-            // Construcción del mensaje con espacios corregidos para evitar el ">*"
-            let msg = eEscudo + " *THE WARRIOR BROTHERS*\n";
+            // Construcción por piezas para evitar errores de símbolos
+            let msg = "ESCUDO *THE WARRIOR BROTHERS*\n";
             msg += "-------------------------------------------\n";
-            msg += "¡Hola *" + cliente + "*! " + eCheck + "\n";
+            msg += "¡Hola *" + cliente + "*! CHECK\n";
             msg += "Confirmamos la recepción de su *" + articulo + "*:\n\n";
-            msg += eMartillo + " *Trabajo:* " + trabajo + "\n";
+            msg += "HERRAMIENTA *Trabajo:* " + trabajo + "\n";
             msg += "-------------------------------------------\n";
-            msg += eBolsa + " *Total:* $" + total + "\n";
-            msg += eBillete + " *Abono:* $" + abono + "\n";
-            msg += eTarjeta + " *Saldo pendiente:* *$" + saldo + "*\n";
+            msg += "DINERO *Total:* $" + total + "\n";
+            msg += "BILLETE *Abono:* $" + abono + "\n";
+            msg += "TARJETA *Saldo pendiente:* *$" + saldo + "*\n";
             msg += "-------------------------------------------\n";
-            msg += eCalendario + " *Entrega estimada:* " + fecha + "\n\n";
-            msg += eAlerta + " *NOTA IMPORTANTE:*\n";
+            msg += "CALENDARIO *Entrega estimada:* " + fecha + "\n\n";
+            msg += "ALERTA *NOTA IMPORTANTE:*\n";
             msg += "• No se realizarán devoluciones de abonos.\n";
             msg += "• Trabajos no retirados en 2 meses se liquidarán.\n\n";
-            msg += "¡Gracias por su confianza! " + eChispas;
+            msg += "¡Gracias por su confianza! CHISPAS";
+
+            // REEMPLAZO DE EMERGENCIA (Esto convierte las palabras en emojis reales)
+            // Usamos códigos de escape UTF-16 para máxima compatibilidad
+            msg = msg.replace("ESCUDO", "\uD83D\uDEE1️")
+                     .replace("CHECK", "\u2705")
+                     .replace("HERRAMIENTA", "\uD83D\uDEE0️")
+                     .replace("DINERO", "\uD83D\uDCB0")
+                     .replace("BILLETE", "\uD83D\uDCB5")
+                     .replace("TARJETA", "\uD83D\uDCB3")
+                     .replace("CALENDARIO", "\uD83D\uDCC5")
+                     .replace("ALERTA", "\u26A0️")
+                     .replace("CHISPAS", "\u2728");
 
             const num = tel.startsWith('0') ? tel.substring(1) : tel;
-            
-            // Forzamos la codificación total para que la PC no se invente símbolos
             const finalURL = "https://wa.me/593" + num + "?text=" + encodeURIComponent(msg);
-            window.open(finalURL, '_blank');
+            
+            window.location.href = finalURL;
         }
     </script>
 </body>
