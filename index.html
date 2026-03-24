@@ -9,7 +9,7 @@
         .card { background-color: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 10px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .header-container { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 20px; gap: 15px; }
         .logo-img { height: 60px; width: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #58a6ff; }
-        h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; }
+        h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; letter-spacing: 1px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
         label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
@@ -27,60 +27,4 @@
         <div class="grid">
             <div class="full-width"><label>Nombre del Cliente:</label><input type="text" id="cliente"></div>
             <div><label>WhatsApp:</label><input type="text" id="tel"></div>
-            <div><label>Entrega Estimada:</label><input type="date" id="fecha"></div>
-            <div class="full-width"><label>Artículo:</label><input type="text" id="articulo"></div>
-            <div class="full-width"><label>Trabajo:</label><input type="text" id="trabajo"></div>
-            <div><label>Total ($):</label><input type="number" id="total" value="0.00" step="0.01"></div>
-            <div><label>Abono ($):</label><input type="number" id="abono" value="0.00" step="0.01"></div>
-        </div>
-        <button class="btn" onclick="enviar()">GENERAR Y ENVIAR</button>
-    </div>
-
-    <script>
-        document.getElementById('fecha').valueAsDate = new Date();
-
-        function enviar() {
-            const cliente = document.getElementById('cliente').value.toUpperCase();
-            const tel = document.getElementById('tel').value;
-            const articulo = document.getElementById('articulo').value.toLowerCase();
-            const trabajo = document.getElementById('trabajo').value;
-            const total = parseFloat(document.getElementById('total').value).toFixed(2);
-            const abono = parseFloat(document.getElementById('abono').value).toFixed(2);
-            const saldo = (total - abono).toFixed(2);
-            const fecha = document.getElementById('fecha').value.split('-').reverse().join('/');
-
-            // Usamos códigos que el navegador traduce a emojis al final
-            const s = "%F0%9F%9B%A1"; // Escudo
-            const k = "%E2%9C%85";     // Check
-            const h = "%F0%9F%9B%A0"; // Herramientas
-            const b = "%F0%9F%92%B0"; // Bolsa dinero
-            const v = "%F0%9F%92%B5"; // Billete
-            const t = "%F0%9F%92%B3"; // Tarjeta
-            const c = "%F0%9F%93%85"; // Calendario
-            const a = "%E2%9A%A0";     // Alerta
-            const x = "%E2%9C%A8";     // Chispas
-
-            let msg = s + " *THE WARRIOR BROTHERS*%0A";
-            msg += "-------------------------------------------%0A";
-            msg += "¡Hola *" + cliente + "*! " + k + "%0A";
-            msg += "Confirmamos la recepción de su *" + articulo + "*:%0A%0A";
-            msg += h + " *Trabajo:* " + trabajo + "%0A";
-            msg += "-------------------------------------------%0A";
-            msg += b + " *Total:* $" + total + "%0A";
-            msg += v + " *Abono:* $" + abono + "%0A";
-            msg += t + " *Saldo pendiente:* *$" + saldo + "*%0A";
-            msg += "-------------------------------------------%0A";
-            msg += c + " *Entrega estimada:* " + fecha + "%0A%0A";
-            msg += a + " *NOTA IMPORTANTE:*%0A";
-            msg += "• No se realizarán devoluciones de abonos.%0A";
-            msg += "• Trabajos no retirados en 2 meses se liquidarán.%0A%0A";
-            msg += "¡Gracias por su confianza! " + x;
-
-            const num = tel.startsWith('0') ? tel.substring(1) : tel;
-            
-            // Enviamos el mensaje ya codificado directamente
-            window.location.href = "https://wa.me/593" + num + "?text=" + msg;
-        }
-    </script>
-</body>
-</html>
+            <div><label>Entrega Estimada:</label><input type="date" id="fecha
