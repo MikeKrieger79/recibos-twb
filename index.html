@@ -7,80 +7,41 @@
     <style>
         body { background-color: #0d1117; color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
         .card { background-color: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 10px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        /* Encabezado con logo circular */
         .header-container { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 20px; gap: 15px; }
         .logo-img { height: 60px; width: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #58a6ff; }
         h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; letter-spacing: 1px; }
-
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
-        
         label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
         input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 6px; width: 94%; font-size: 1em; }
-        input:focus { border-color: #58a6ff; outline: none; }
-
         .button-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .btn { padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1em; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
+        .btn { padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.3s; width: 100%; }
         .btn-send { background: #238636; color: white; grid-column: span 2; }
-        .btn-send:hover { background: #2ea043; transform: scale(1.02); }
         .btn-clear { background: #30363d; color: #c9d1d9; }
-        .btn-clear:hover { background: #444c56; }
     </style>
 </head>
 <body>
-
     <div class="card">
         <div class="header-container">
             <img src="logo.png" alt="TWB" class="logo-img" onerror="this.style.display='none'">
             <h2>THE WARRIOR BROTHERS</h2>
         </div>
-
         <div class="grid">
-            <div class="full-width">
-                <label>👤 Nombre del Cliente:</label>
-                <input type="text" id="cliente" placeholder="Ej: MICHAEL GUERRERO">
-            </div>
-            
-            <div>
-                <label>📱 WhatsApp (09...):</label>
-                <input type="text" id="tel" placeholder="0968236183">
-            </div>
-
-            <div>
-                <label>📅 Entrega Estimada:</label>
-                <input type="date" id="fecha">
-            </div>
-
-            <div class="full-width">
-                <label>👟 Artículo:</label>
-                <input type="text" id="articulo" placeholder="Ej: zapatos Puma, mochila, bolso">
-            </div>
-
-            <div class="full-width">
-                <label>🛠️ Trabajo a realizar:</label>
-                <input type="text" id="trabajo" placeholder="Ej: coser, reforzar, suelas">
-            </div>
-
-            <div>
-                <label>💰 Total ($):</label>
-                <input type="number" id="total" value="0.00" step="0.01">
-            </div>
-
-            <div>
-                <label>💵 Abono ($):</label>
-                <input type="number" id="abono" value="0.00" step="0.01">
-            </div>
+            <div class="full-width"><label>Nombre del Cliente:</label><input type="text" id="cliente"></div>
+            <div><label>WhatsApp:</label><input type="text" id="tel"></div>
+            <div><label>Entrega Estimada:</label><input type="date" id="fecha"></div>
+            <div class="full-width"><label>Artículo:</label><input type="text" id="articulo"></div>
+            <div class="full-width"><label>Trabajo:</label><input type="text" id="trabajo"></div>
+            <div><label>Total ($):</label><input type="number" id="total" value="0.00" step="0.01"></div>
+            <div><label>Abono ($):</label><input type="number" id="abono" value="0.00" step="0.01"></div>
         </div>
-
         <div class="button-container">
-            <button class="btn btn-send" onclick="enviarWhatsApp()">💾 GENERAR Y ENVIAR</button>
-            <button class="btn btn-clear" onclick="limpiar()">🔄 LIMPIAR</button>
+            <button class="btn btn-send" onclick="enviarWhatsApp()">GENERAR Y ENVIAR</button>
+            <button class="btn btn-clear" onclick="limpiar()">LIMPIAR</button>
         </div>
     </div>
 
     <script>
-        // Pone la fecha de hoy al cargar la página
         document.getElementById('fecha').valueAsDate = new Date();
 
         function enviarWhatsApp() {
@@ -90,53 +51,32 @@
             const fecha = fechaInput ? fechaInput.split('-').reverse().join('/') : '--/--/----';
             const articulo = document.getElementById('articulo').value.trim().toLowerCase();
             const trabajo = document.getElementById('trabajo').value.trim();
-            
-            const totalVal = parseFloat(document.getElementById('total').value || 0);
-            const abonoVal = parseFloat(document.getElementById('abono').value || 0);
-            const total = totalVal.toFixed(2);
-            const abono = abonoVal.toFixed(2);
-            const saldo = (totalVal - abonoVal).toFixed(2);
+            const total = parseFloat(document.getElementById('total').value || 0).toFixed(2);
+            const abono = parseFloat(document.getElementById('abono').value || 0).toFixed(2);
+            const saldo = (total - abono).toFixed(2);
 
-            if (!cliente || !tel || !articulo) {
-                alert("Por favor llena el nombre, teléfono y artículo.");
-                return;
-            }
-
-            // Mensaje con formato profesional y emojis corregidos
-            const msg = `🛡️ *THE WARRIOR BROTHERS*\n` +
+            // Estos códigos \uD83D... son la forma "indestructible" de poner emojis
+            const msg = `\uD83D\uDEE1 *THE WARRIOR BROTHERS*\n` +
                         `-------------------------------------------\n` +
-                        `¡Hola *${cliente}*! ✅\n` +
+                        `¡Hola *${cliente}*! \u2705\n` +
                         `Confirmamos la recepción de su *${articulo}*:\n\n` +
-                        `🛠️ *Trabajo:* ${trabajo}\n` +
+                        `\uD83D\uDEE0 *Trabajo:* ${trabajo}\n` +
                         `-------------------------------------------\n` +
-                        `💰 *Total:* $${total}\n` +
-                        `💵 *Abono:* $${abono}\n` +
-                        `💳 *Saldo pendiente:* *$${saldo}*\n` +
+                        `\uD83D\uDCB0 *Total:* $${total}\n` +
+                        `\uD83D\uDCB5 *Abono:* $${abono}\n` +
+                        `\uD83D\uDCB3 *Saldo pendiente:* *$${saldo}*\n` +
                         `-------------------------------------------\n` +
-                        `📅 *Entrega estimada:* ${fecha}\n\n` +
-                        `⚠️ *NOTA IMPORTANTE:*\n` +
-                        `• Una vez ingresada la obra, no se realizarán devoluciones de abonos ni entregas antes de la fecha acordada.\n` +
-                        `• Los trabajos no retirados pasados los 2 meses serán liquidados para cubrir costos de material.\n\n` +
-                        `¡Gracias por su confianza! ✨`;
+                        `\uD83D\uDCC5 *Entrega estimada:* ${fecha}\n\n` +
+                        `\u26A0 *NOTA IMPORTANTE:*\n` +
+                        `• Una vez ingresada la obra, no se realizarán devoluciones de abonos.\n` +
+                        `• Pasados los 2 meses los trabajos se liquidarán.\n\n` +
+                        `¡Gracias por su confianza! \u2728`;
 
-            // Limpia el 0 inicial del número si existe
             let num = tel.startsWith('0') ? tel.substring(1) : tel;
-            const url = `https://wa.me/593${num}?text=${encodeURIComponent(msg)}`;
-            
-            window.open(url, '_blank');
+            window.open(`https://wa.me/593${num}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        function limpiar() {
-            if (confirm("¿Limpiar todos los campos para un nuevo cliente?")) {
-                document.getElementById('cliente').value = '';
-                document.getElementById('tel').value = '';
-                document.getElementById('articulo').value = '';
-                document.getElementById('trabajo').value = '';
-                document.getElementById('total').value = '0.00';
-                document.getElementById('abono').value = '0.00';
-                document.getElementById('fecha').valueAsDate = new Date();
-            }
-        }
+        function limpiar() { location.reload(); }
     </script>
 </body>
 </html>
