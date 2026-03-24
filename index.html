@@ -55,25 +55,38 @@
             const abono = parseFloat(document.getElementById('abono').value || 0).toFixed(2);
             const saldo = (total - abono).toFixed(2);
 
-            // Estos códigos \uD83D... son la forma "indestructible" de poner emojis
-            const msg = `\uD83D\uDEE1 *THE WARRIOR BROTHERS*\n` +
+            // Armamos el mensaje usando variables para los emojis
+            const eEscudo = "🛡️";
+            const eCheck = "✅";
+            const eMartillo = "🛠️";
+            const eBolsa = "💰";
+            const eBillete = "💵";
+            const eTarjeta = "💳";
+            const eCalendario = "📅";
+            const eAlerta = "⚠️";
+            const eChispas = "✨";
+
+            const msg = `${eEscudo} *THE WARRIOR BROTHERS*\n` +
                         `-------------------------------------------\n` +
-                        `¡Hola *${cliente}*! \u2705\n` +
+                        `¡Hola *${cliente}*! ${eCheck}\n` +
                         `Confirmamos la recepción de su *${articulo}*:\n\n` +
-                        `\uD83D\uDEE0 *Trabajo a realizar:* ${trabajo}\n` +
+                        `${eMartillo} *Trabajo:* ${trabajo}\n` +
                         `-------------------------------------------\n` +
-                        `\uD83D\uDCB0 *Total:* $${total}\n` +
-                        `\uD83D\uDCB5 *Abono:* $${abono}\n` +
-                        `\uD83D\uDCB3 *Saldo pendiente:* *$${saldo}*\n` +
+                        `${eBolsa} *Total:* $${total}\n` +
+                        `${eBillete} *Abono:* $${abono}\n` +
+                        `${eTarjeta} *Saldo pendiente:* *$${saldo}*\n` +
                         `-------------------------------------------\n` +
-                        `\uD83D\uDCC5 *Entrega estimada:* ${fecha}\n\n` +
-                        `\u26A0 *NOTA IMPORTANTE:*\n` +
+                        `${eCalendario} *Entrega estimada:* ${fecha}\n\n` +
+                        `${eAlerta} *NOTA IMPORTANTE:*\n` +
                         `• Una vez ingresada la obra, no se realizarán devoluciones de abonos.\n` +
-                        `• Pasados los 2 meses los trabajos se liquidarán.\n\n` +
-                        `¡Gracias por su confianza! \u2728`;
+                        `• Los trabajos no retirados pasados los 2 meses serán liquidados.\n\n` +
+                        `¡Gracias por su confianza! ${eChispas}`;
 
             let num = tel.startsWith('0') ? tel.substring(1) : tel;
-            window.open(`https://wa.me/593${num}?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            // EL TRUCO FINAL: Forzamos la limpieza del texto para la URL
+            const textoFinal = encodeURIComponent(msg);
+            window.open(`https://wa.me/593${num}?text=${textoFinal}`, '_blank');
         }
 
         function limpiar() { location.reload(); }
