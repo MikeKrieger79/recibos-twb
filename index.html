@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TWB - Recibos</title>
+    <style>
+        body { background-color: #0d1117; color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .card { background-color: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 10px; width: 100%; max-width: 500px; }
+        h2 { border-bottom: 1px solid #30363d; padding-bottom: 10px; color: #58a6ff; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; }
+        input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 10px; border-radius: 6px; width: 90%; }
+        .btn { width: 100%; padding: 15px; margin-top: 25px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background: #2ea043; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🛡️ Los Hermanos Guerreros</h2>
+        <div class="grid">
+            <div><label>👤 Cliente:</label><input type="text" id="cliente"></div>
+            <div><label>📱 WhatsApp:</label><input type="text" id="tel" placeholder="09..."></div>
+            <div><label>💰 Total ($):</label><input type="number" id="total" value="0"></div>
+            <div><label>💵 Abono ($):</label><input type="number" id="abono" value="0"></div>
+        </div>
+        <button class="btn" onclick="enviarWhatsApp()">💾 GENERAR Y ENVIAR</button>
+    </div>
+
+    <script>
+        function enviarWhatsApp() {
+            const cliente = document.getElementById('cliente').value;
+            const tel = document.getElementById('tel').value;
+            const total = parseFloat(document.getElementById('total').value);
+            const abono = parseFloat(document.getElementById('abono').value);
+            const saldo = total - abono;
+
+            const msg = `Hola ${cliente}, soy de *The Warrior Brothers*. Tu trabajo está listo. Total: $${total}, Abonó: $${abono}. Saldo pendiente: *$${saldo}*.`;
+            const url = `https://wa.me/593${tel.substring(1)}?text=${encodeURIComponent(msg)}`;
+            
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
