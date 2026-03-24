@@ -14,8 +14,7 @@
         .full-width { grid-column: span 2; }
         label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
         input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 6px; width: 94%; font-size: 1em; }
-        .btn { width: 100%; padding: 15px; margin-top: 25px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
-        .btn:hover { background: #2ea043; }
+        .btn { width: 100%; padding: 15px; margin-top: 25px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; }
     </style>
 </head>
 <body>
@@ -47,36 +46,36 @@
             const total = parseFloat(document.getElementById('total').value).toFixed(2);
             const abono = parseFloat(document.getElementById('abono').value).toFixed(2);
             const saldo = (total - abono).toFixed(2);
-            const fecha = document.getElementById('fecha').value.split('-').reverse().join('/');
+            const fechaInput = document.getElementById('fecha').value;
+            const fecha = fechaInput ? fechaInput.split('-').reverse().join('/') : '--/--/----';
 
-            // Construcción por piezas para evitar errores de símbolos
-            let msg = "ESCUDO *THE WARRIOR BROTHERS*\n";
+            // ESTA ES LA SOLUCIÓN TÉCNICA: Códigos URL puros. 
+            // GitHub no puede "romper" esto porque no hay emojis en el código.
+            const s = decodeURIComponent('%F0%9F%9B%A1'); // Escudo
+            const k = decodeURIComponent('%E2%9C%85');     // Check
+            const h = decodeURIComponent('%F0%9F%9B%A0'); // Herramienta
+            const b = decodeURIComponent('%F0%9F%92%B0'); // Bolsa
+            const v = decodeURIComponent('%F0%9F%92%B5'); // Billete
+            const t = decodeURIComponent('%F0%9F%92%B3'); // Tarjeta
+            const c = decodeURIComponent('%F0%9F%93%85'); // Calendario
+            const a = decodeURIComponent('%E2%9A%A0');     // Alerta
+            const x = decodeURIComponent('%E2%9C%A8');     // Chispas
+
+            let msg = s + " *THE WARRIOR BROTHERS*\n";
             msg += "-------------------------------------------\n";
-            msg += "¡Hola *" + cliente + "*! CHECK\n";
+            msg += "¡Hola *" + cliente + "*! " + k + "\n";
             msg += "Confirmamos la recepción de su *" + articulo + "*:\n\n";
-            msg += "HERRAMIENTA *Trabajo:* " + trabajo + "\n";
+            msg += h + " *Trabajo:* " + trabajo + "\n";
             msg += "-------------------------------------------\n";
-            msg += "DINERO *Total:* $" + total + "\n";
-            msg += "BILLETE *Abono:* $" + abono + "\n";
-            msg += "TARJETA *Saldo pendiente:* *$" + saldo + "*\n";
+            msg += b + " *Total:* $" + total + "\n";
+            msg += v + " *Abono:* $" + abono + "\n";
+            msg += t + " *Saldo pendiente:* *$" + saldo + "*\n";
             msg += "-------------------------------------------\n";
-            msg += "CALENDARIO *Entrega estimada:* " + fecha + "\n\n";
-            msg += "ALERTA *NOTA IMPORTANTE:*\n";
+            msg += c + " *Entrega estimada:* " + fecha + "\n\n";
+            msg += a + " *NOTA IMPORTANTE:*\n";
             msg += "• No se realizarán devoluciones de abonos.\n";
             msg += "• Trabajos no retirados en 2 meses se liquidarán.\n\n";
-            msg += "¡Gracias por su confianza! CHISPAS";
-
-            // REEMPLAZO DE EMERGENCIA (Esto convierte las palabras en emojis reales)
-            // Usamos códigos de escape UTF-16 para máxima compatibilidad
-            msg = msg.replace("ESCUDO", "\uD83D\uDEE1️")
-                     .replace("CHECK", "\u2705")
-                     .replace("HERRAMIENTA", "\uD83D\uDEE0️")
-                     .replace("DINERO", "\uD83D\uDCB0")
-                     .replace("BILLETE", "\uD83D\uDCB5")
-                     .replace("TARJETA", "\uD83D\uDCB3")
-                     .replace("CALENDARIO", "\uD83D\uDCC5")
-                     .replace("ALERTA", "\u26A0️")
-                     .replace("CHISPAS", "\u2728");
+            msg += "¡Gracias por su confianza! " + x;
 
             const num = tel.startsWith('0') ? tel.substring(1) : tel;
             const finalURL = "https://wa.me/593" + num + "?text=" + encodeURIComponent(msg);
