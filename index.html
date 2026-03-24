@@ -55,16 +55,16 @@
             const abono = parseFloat(document.getElementById('abono').value || 0).toFixed(2);
             const saldo = (total - abono).toFixed(2);
 
-            // Armamos el mensaje usando variables para los emojis
-            const eEscudo = "🛡️";
-            const eCheck = "✅";
-            const eMartillo = "🛠️";
-            const eBolsa = "💰";
-            const eBillete = "💵";
-            const eTarjeta = "💳";
-            const eCalendario = "📅";
-            const eAlerta = "⚠️";
-            const eChispas = "✨";
+            // CÓDIGOS UNIVERSALES (No se rompen)
+            const eEscudo = "\uD83D\uDEE1"; 
+            const eCheck = "\u2705";
+            const eMartillo = "\uD83D\uDEE0";
+            const eBolsa = "\uD83D\uDCB0";
+            const eBillete = "\uD83D\uDCB5";
+            const eTarjeta = "\uD83D\uDCB3";
+            const eCalendario = "\uD83D\uDCC5";
+            const eAlerta = "\u26A0";
+            const eChispas = "\u2728";
 
             const msg = `${eEscudo} *THE WARRIOR BROTHERS*\n` +
                         `-------------------------------------------\n` +
@@ -83,13 +83,14 @@
                         `¡Gracias por su confianza! ${eChispas}`;
 
             let num = tel.startsWith('0') ? tel.substring(1) : tel;
-            
-            // EL TRUCO FINAL: Forzamos la limpieza del texto para la URL
             const textoFinal = encodeURIComponent(msg);
             window.open(`https://wa.me/593${num}?text=${textoFinal}`, '_blank');
         }
 
         function limpiar() { location.reload(); }
+    </script>
+</body>
+</html>(); }
     </script>
 </body>
 </html>
