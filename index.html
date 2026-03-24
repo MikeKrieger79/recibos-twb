@@ -3,94 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TWB - Sistema de Recibos</title>
+    <title>TWB - Sistema Profesional</title>
     <style>
         body { background-color: #0d1117; color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
         .card { background-color: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 10px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .header-container { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 20px; gap: 15px; }
         .logo-img { height: 60px; width: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #58a6ff; }
-        h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; letter-spacing: 1px; }
+        h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
         label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
         input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 6px; width: 94%; font-size: 1em; }
-        .button-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .btn { padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.3s; width: 100%; }
-        .btn-send { background: #238636; color: white; grid-column: span 2; }
-        .btn-clear { background: #30363d; color: #c9d1d9; }
+        .btn { width: 100%; padding: 15px; margin-top: 25px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="header-container">
-            <img src="logo.png" alt="TWB" class="logo-img" onerror="this.style.display='none'">
+            <img src="logo.png" alt="TWB" class="logo-img">
             <h2>THE WARRIOR BROTHERS</h2>
         </div>
         <div class="grid">
-            <div class="full-width"><label>Nombre del Cliente:</label><input type="text" id="cliente"></div>
+            <div class="full-width"><label>Cliente:</label><input type="text" id="cliente"></div>
             <div><label>WhatsApp:</label><input type="text" id="tel"></div>
-            <div><label>Entrega Estimada:</label><input type="date" id="fecha"></div>
+            <div><label>Entrega:</label><input type="date" id="fecha"></div>
             <div class="full-width"><label>Artículo:</label><input type="text" id="articulo"></div>
             <div class="full-width"><label>Trabajo:</label><input type="text" id="trabajo"></div>
-            <div><label>Total ($):</label><input type="number" id="total" value="0.00" step="0.01"></div>
-            <div><label>Abono ($):</label><input type="number" id="abono" value="0.00" step="0.01"></div>
+            <div><label>Total:</label><input type="number" id="total" value="0.00"></div>
+            <div><label>Abono:</label><input type="number" id="abono" value="0.00"></div>
         </div>
-        <div class="button-container">
-            <button class="btn btn-send" onclick="enviarWhatsApp()">GENERAR Y ENVIAR</button>
-            <button class="btn btn-clear" onclick="limpiar()">LIMPIAR</button>
-        </div>
+        <button class="btn" onclick="enviar()">GENERAR Y ENVIAR</button>
     </div>
 
     <script>
         document.getElementById('fecha').valueAsDate = new Date();
 
-        function enviarWhatsApp() {
-            const cliente = document.getElementById('cliente').value.trim().toUpperCase();
-            const tel = document.getElementById('tel').value.trim();
-            const fechaInput = document.getElementById('fecha').value;
-            const fecha = fechaInput ? fechaInput.split('-').reverse().join('/') : '--/--/----';
-            const articulo = document.getElementById('articulo').value.trim().toLowerCase();
-            const trabajo = document.getElementById('trabajo').value.trim();
-            const total = parseFloat(document.getElementById('total').value || 0).toFixed(2);
-            const abono = parseFloat(document.getElementById('abono').value || 0).toFixed(2);
+        function enviar() {
+            const cliente = document.getElementById('cliente').value.toUpperCase();
+            const tel = document.getElementById('tel').value;
+            const articulo = document.getElementById('articulo').value;
+            const trabajo = document.getElementById('trabajo').value;
+            const total = parseFloat(document.getElementById('total').value).toFixed(2);
+            const abono = parseFloat(document.getElementById('abono').value).toFixed(2);
             const saldo = (total - abono).toFixed(2);
+            const fecha = document.getElementById('fecha').value.split('-').reverse().join('/');
 
-            // CÓDIGOS UNIVERSALES (No se rompen)
-            const eEscudo = "\uD83D\uDEE1"; 
-            const eCheck = "\u2705";
-            const eMartillo = "\uD83D\uDEE0";
-            const eBolsa = "\uD83D\uDCB0";
-            const eBillete = "\uD83D\uDCB5";
-            const eTarjeta = "\uD83D\uDCB3";
-            const eCalendario = "\uD83D\uDCC5";
-            const eAlerta = "\u26A0";
-            const eChispas = "\u2728";
+            // Construcción ultra-limpia sin emojis directos en el texto
+            let msg = "🛡️ *THE WARRIOR BROTHERS*\n";
+            msg += "-------------------------------------------\n";
+            msg += "¡Hola *" + cliente + "*! ✅\n";
+            msg += "Confirmamos la recepción de su *" + articulo + "*:\n\n";
+            msg += "🛠️ *Trabajo:* " + trabajo + "\n";
+            msg += "-------------------------------------------\n";
+            msg += "💰 *Total:* $" + total + "\n";
+            msg += "💵 *Abono:* $" + abono + "\n";
+            msg += "💳 *Saldo pendiente:* *$" + saldo + "*\n";
+            msg += "-------------------------------------------\n";
+            msg += "📅 *Entrega estimada:* " + fecha + "\n\n";
+            msg += "⚠️ *NOTA IMPORTANTE:*\n";
+            msg += "• No se realizarán devoluciones de abonos.\n";
+            msg += "• Trabajos no retirados en 2 meses se liquidarán.\n\n";
+            msg += "¡Gracias por su confianza! ✨";
 
-            const msg = `${eEscudo} *THE WARRIOR BROTHERS*\n` +
-                        `-------------------------------------------\n` +
-                        `¡Hola *${cliente}*! ${eCheck}\n` +
-                        `Confirmamos la recepción de su *${articulo}*:\n\n` +
-                        `${eMartillo} *Trabajo:* ${trabajo}\n` +
-                        `-------------------------------------------\n` +
-                        `${eBolsa} *Total:* $${total}\n` +
-                        `${eBillete} *Abono:* $${abono}\n` +
-                        `${eTarjeta} *Saldo pendiente:* *$${saldo}*\n` +
-                        `-------------------------------------------\n` +
-                        `${eCalendario} *Entrega estimada:* ${fecha}\n\n` +
-                        `${eAlerta} *NOTA IMPORTANTE:*\n` +
-                        `• Una vez ingresada la obra, no se realizarán devoluciones de abonos.\n` +
-                        `• Los trabajos no retirados pasados los 2 meses serán liquidados.\n\n` +
-                        `¡Gracias por su confianza! ${eChispas}`;
-
-            let num = tel.startsWith('0') ? tel.substring(1) : tel;
-            const textoFinal = encodeURIComponent(msg);
-            window.open(`https://wa.me/593${num}?text=${textoFinal}`, '_blank');
+            const num = tel.startsWith('0') ? tel.substring(1) : tel;
+            const finalURL = "https://wa.me/593" + num + "?text=" + encodeURIComponent(msg);
+            
+            window.location.href = finalURL; // Usamos esto en lugar de window.open para evitar bloqueos
         }
-
-        function limpiar() { location.reload(); }
-    </script>
-</body>
-</html>(); }
     </script>
 </body>
 </html>
