@@ -14,7 +14,8 @@
         .full-width { grid-column: span 2; }
         label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
         input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 6px; width: 94%; font-size: 1em; }
-        .btn { width: 100%; padding: 15px; margin-top: 25px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; }
+        .btn { width: 100%; padding: 15px; margin-top: 25px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
+        .btn:hover { background: #2ea043; }
     </style>
 </head>
 <body>
@@ -29,8 +30,8 @@
             <div><label>Entrega:</label><input type="date" id="fecha"></div>
             <div class="full-width"><label>Artículo:</label><input type="text" id="articulo"></div>
             <div class="full-width"><label>Trabajo:</label><input type="text" id="trabajo"></div>
-            <div><label>Total:</label><input type="number" id="total" value="0.00"></div>
-            <div><label>Abono:</label><input type="number" id="abono" value="0.00"></div>
+            <div><label>Total:</label><input type="number" id="total" value="0.00" step="0.01"></div>
+            <div><label>Abono:</label><input type="number" id="abono" value="0.00" step="0.01"></div>
         </div>
         <button class="btn" onclick="enviar()">GENERAR Y ENVIAR</button>
     </div>
@@ -41,34 +42,45 @@
         function enviar() {
             const cliente = document.getElementById('cliente').value.toUpperCase();
             const tel = document.getElementById('tel').value;
-            const articulo = document.getElementById('articulo').value;
+            const articulo = document.getElementById('articulo').value.toLowerCase();
             const trabajo = document.getElementById('trabajo').value;
             const total = parseFloat(document.getElementById('total').value).toFixed(2);
             const abono = parseFloat(document.getElementById('abono').value).toFixed(2);
             const saldo = (total - abono).toFixed(2);
             const fecha = document.getElementById('fecha').value.split('-').reverse().join('/');
 
-            // Construcción ultra-limpia sin emojis directos en el texto
-            let msg = "🛡️ *THE WARRIOR BROTHERS*\n";
+            // Construcción por piezas para evitar errores de símbolos
+            let msg = "ESCUDO *THE WARRIOR BROTHERS*\n";
             msg += "-------------------------------------------\n";
-            msg += "¡Hola *" + cliente + "*! ✅\n";
+            msg += "¡Hola *" + cliente + "*! CHECK\n";
             msg += "Confirmamos la recepción de su *" + articulo + "*:\n\n";
-            msg += "🛠️ *Trabajo:* " + trabajo + "\n";
+            msg += "HERRAMIENTA *Trabajo:* " + trabajo + "\n";
             msg += "-------------------------------------------\n";
-            msg += "💰 *Total:* $" + total + "\n";
-            msg += "💵 *Abono:* $" + abono + "\n";
-            msg += "💳 *Saldo pendiente:* *$" + saldo + "*\n";
+            msg += "DINERO *Total:* $" + total + "\n";
+            msg += "BILLETE *Abono:* $" + abono + "\n";
+            msg += "TARJETA *Saldo pendiente:* *$" + saldo + "*\n";
             msg += "-------------------------------------------\n";
-            msg += "📅 *Entrega estimada:* " + fecha + "\n\n";
-            msg += "⚠️ *NOTA IMPORTANTE:*\n";
+            msg += "CALENDARIO *Entrega estimada:* " + fecha + "\n\n";
+            msg += "ALERTA *NOTA IMPORTANTE:*\n";
             msg += "• No se realizarán devoluciones de abonos.\n";
             msg += "• Trabajos no retirados en 2 meses se liquidarán.\n\n";
-            msg += "¡Gracias por su confianza! ✨";
+            msg += "¡Gracias por su confianza! CHISPAS";
+
+            // REEMPLAZO DE EMERGENCIA (Esto convierte las palabras en emojis reales)
+            msg = msg.replace("ESCUDO", "🛡️")
+                     .replace("CHECK", "✅")
+                     .replace("HERRAMIENTA", "🛠️")
+                     .replace("DINERO", "💰")
+                     .replace("BILLETE", "💵")
+                     .replace("TARJETA", "💳")
+                     .replace("CALENDARIO", "📅")
+                     .replace("ALERTA", "⚠️")
+                     .replace("CHISPAS", "✨");
 
             const num = tel.startsWith('0') ? tel.substring(1) : tel;
             const finalURL = "https://wa.me/593" + num + "?text=" + encodeURIComponent(msg);
             
-            window.location.href = finalURL; // Usamos esto en lugar de window.open para evitar bloqueos
+            window.location.href = finalURL;
         }
     </script>
 </body>
