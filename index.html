@@ -1,87 +1,35 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TWB - Sistema Profesional</title>
-    <style>
-        body { background-color: #0d1117; color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .card { background-color: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 10px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .header-container { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 20px; gap: 15px; }
-        .logo-img { height: 60px; width: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #58a6ff; }
-        h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .full-width { grid-column: span 2; }
-        label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
-        input { background: #0d1117; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 6px; width: 94%; font-size: 1em; }
-        .btn { width: 100%; padding: 15px; margin-top: 25px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <div class="header-container">
-            <img src="logo.png" alt="TWB" class="logo-img">
-            <h2>THE WARRIOR BROTHERS</h2>
-        </div>
-        <div class="grid">
-            <div class="full-width"><label>Cliente:</label><input type="text" id="cliente"></div>
-            <div><label>WhatsApp:</label><input type="text" id="tel"></div>
-            <div><label>Entrega:</label><input type="date" id="fecha"></div>
-            <div class="full-width"><label>Artículo:</label><input type="text" id="articulo"></div>
-            <div class="full-width"><label>Trabajo:</label><input type="text" id="trabajo"></div>
-            <div><label>Total:</label><input type="number" id="total" value="0.00" step="0.01"></div>
-            <div><label>Abono:</label><input type="number" id="abono" value="0.00" step="0.01"></div>
-        </div>
-        <button class="btn" onclick="enviar()">GENERAR Y ENVIAR</button>
-    </div>
+# --- GENERADOR DE WHATSAPP CON NOTA IMPORTANTE (VERSIÓN ANTIRROMBOS) ---
+# Definimos los emojis por código para que la PC no se confunda
+e_escudo = "\U0001F6E1"
+e_check = "\u2705"
+e_maleta = "\U0001F4BC"
+e_llave = "\U0001F6E0"
+e_bolsa = "\U0001F4B0"
+e_billete = "\U0001F4B5"
+e_tarjeta = "\U0001F4B3"
+e_calen = "\U0001F4D3"
+e_alerta = "\u26A0"
+e_chispas = "\u2728"
 
-    <script>
-        document.getElementById('fecha').valueAsDate = new Date();
+msg_wa = (
+    f"{e_escudo} *THE WARRIOR BROTHERS*\n"
+    "------------------------------------------\n"
+    f"¡Hola *{nombre.upper()}*! {e_check}\n"
+    "Confirmamos la recepción de su artículo:\n\n"
+    f"{e_maleta} *Artículo:* {articulo}\n"
+    f"{e_llave} *Trabajo:* {reparacion}\n"
+    "------------------------------------------\n"
+    f"{e_bolsa} *Total:* ${total:.2f}\n"
+    f"{e_billete} *Abono:* ${abono:.2f}\n"
+    f"{e_tarjeta} *Saldo pendiente:* *${saldo:.2f}*\n"
+    "------------------------------------------\n"
+    f"{e_calen} *Entrega estimada:* {f_e}\n\n"
+    f"{e_alerta} *NOTA IMPORTANTE:*\n"
+    "- Una vez ingresada la obra, no se realizarán devoluciones de abonos.\n"
+    "- Trabajos no retirados pasados los 2 meses serán liquidados.\n\n"
+    f"¡Gracias por su confianza! {e_chispas}"
+)
 
-        function enviar() {
-            const cliente = document.getElementById('cliente').value.toUpperCase();
-            const tel = document.getElementById('tel').value;
-            const articulo = document.getElementById('articulo').value.toLowerCase();
-            const trabajo = document.getElementById('trabajo').value;
-            const total = parseFloat(document.getElementById('total').value).toFixed(2);
-            const abono = parseFloat(document.getElementById('abono').value).toFixed(2);
-            const saldo = (total - abono).toFixed(2);
-            const fechaInput = document.getElementById('fecha').value;
-            const fecha = fechaInput ? fechaInput.split('-').reverse().join('/') : '--/--/----';
-
-            // ESTA ES LA SOLUCIÓN TÉCNICA: Códigos URL puros. 
-            // GitHub no puede "romper" esto porque no hay emojis en el código.
-            const s = decodeURIComponent('%F0%9F%9B%A1'); // Escudo
-            const k = decodeURIComponent('%E2%9C%85');     // Check
-            const h = decodeURIComponent('%F0%9F%9B%A0'); // Herramienta
-            const b = decodeURIComponent('%F0%9F%92%B0'); // Bolsa
-            const v = decodeURIComponent('%F0%9F%92%B5'); // Billete
-            const t = decodeURIComponent('%F0%9F%92%B3'); // Tarjeta
-            const c = decodeURIComponent('%F0%9F%93%85'); // Calendario
-            const a = decodeURIComponent('%E2%9A%A0');     // Alerta
-            const x = decodeURIComponent('%E2%9C%A8');     // Chispas
-
-            let msg = s + " *THE WARRIOR BROTHERS*\n";
-            msg += "-------------------------------------------\n";
-            msg += "¡Hola *" + cliente + "*! " + k + "\n";
-            msg += "Confirmamos la recepción de su *" + articulo + "*:\n\n";
-            msg += h + " *Trabajo:* " + trabajo + "\n";
-            msg += "-------------------------------------------\n";
-            msg += b + " *Total:* $" + total + "\n";
-            msg += v + " *Abono:* $" + abono + "\n";
-            msg += t + " *Saldo pendiente:* *$" + saldo + "*\n";
-            msg += "-------------------------------------------\n";
-            msg += c + " *Entrega estimada:* " + fecha + "\n\n";
-            msg += a + " *NOTA IMPORTANTE:*\n";
-            msg += "• No se realizarán devoluciones de abonos.\n";
-            msg += "• Trabajos no retirados en 2 meses se liquidarán.\n\n";
-            msg += "¡Gracias por su confianza! " + x;
-
-            const num = tel.startsWith('0') ? tel.substring(1) : tel;
-            const finalURL = "https://wa.me/593" + num + "?text=" + encodeURIComponent(msg);
-            
-            window.location.href = finalURL;
-        }
-    </script>
-</body>
-</html>
+# El resto de tu código (texto_url y link_wa) se queda IGUAL
+texto_url = urllib.parse.quote(msg_wa)
+link_wa = f"https://api.whatsapp.com/send?phone=593{celular.lstrip('0')}&text={texto_url}"
