@@ -1,35 +1,79 @@
-# --- GENERADOR DE WHATSAPP CON NOTA IMPORTANTE (VERSIÓN ANTIRROMBOS) ---
-# Definimos los emojis por código para que la PC no se confunda
-e_escudo = "\U0001F6E1"
-e_check = "\u2705"
-e_maleta = "\U0001F4BC"
-e_llave = "\U0001F6E0"
-e_bolsa = "\U0001F4B0"
-e_billete = "\U0001F4B5"
-e_tarjeta = "\U0001F4B3"
-e_calen = "\U0001F4D3"
-e_alerta = "\u26A0"
-e_chispas = "\u2728"
+import streamlit as st
+import pandas as pd
+from datetime import datetime, timedelta
+import urllib.parse
+import pytz
+from streamlit_gsheets import GSheetsConnection
 
-msg_wa = (
-    f"{e_escudo} *THE WARRIOR BROTHERS*\n"
-    "------------------------------------------\n"
-    f"¡Hola *{nombre.upper()}*! {e_check}\n"
-    "Confirmamos la recepción de su artículo:\n\n"
-    f"{e_maleta} *Artículo:* {articulo}\n"
-    f"{e_llave} *Trabajo:* {reparacion}\n"
-    "------------------------------------------\n"
-    f"{e_bolsa} *Total:* ${total:.2f}\n"
-    f"{e_billete} *Abono:* ${abono:.2f}\n"
-    f"{e_tarjeta} *Saldo pendiente:* *${saldo:.2f}*\n"
-    "------------------------------------------\n"
-    f"{e_calen} *Entrega estimada:* {f_e}\n\n"
-    f"{e_alerta} *NOTA IMPORTANTE:*\n"
-    "- Una vez ingresada la obra, no se realizarán devoluciones de abonos.\n"
-    "- Trabajos no retirados pasados los 2 meses serán liquidados.\n\n"
-    f"¡Gracias por su confianza! {e_chispas}"
-)
+# --- CONFIGURACIÓN ---
+st.set_page_config(page_title="Warrior Brothers Admin", page_icon="🛡️")
+zona_ec = pytz.timezone('America/Guayaquil')
 
-# El resto de tu código (texto_url y link_wa) se queda IGUAL
-texto_url = urllib.parse.quote(msg_wa)
-link_wa = f"https://api.whatsapp.com/send?phone=593{celular.lstrip('0')}&text={texto_url}"
+# --- SEGURIDAD ---
+if "autenticado" not in st.session_state:
+    st.session_state["autenticado"] = False
+
+if not st.session_state["autenticado"]:
+    st.title("🔐 Acceso Privado")
+    password = st.text_input("Ingresa la contraseña:", type="password")
+    if st.button("Entrar"):
+        if password == "WARRIOR2026":
+            st.session_state["autenticado"] = True
+            st.rerun()
+        else:
+            st.error("Contraseña incorrecta.")
+    st.stop()
+
+# --- APLICACIÓN PRINCIPAL ---
+st.title("🛡️ Los Hermanos Guerreros")
+
+with st.form("form_warrior", clear_on_submit=True):
+    col1, col2 = st.columns(2)
+    with col1:
+        nombre = st.text_input("👤 Cliente:")
+        celular = st.text_input("📱 WhatsApp:")
+        articulo = st.text_input("💼 Artículo:")
+    with col2:
+        reparacion = st.text_input("🛠️ Reparación:")
+        total = st.number_input("💰 Total ($):", min_value=0.0)
+        abono = st.number_input("💵 Abono ($):", min_value=0.0)
+        dias = st.number_input("📅 Días entrega:", min_value=1, value=3)
+    
+    submit = st.form_submit_button("💾 GUARDAR Y GENERAR")
+
+if submit:
+    if nombre and celular:
+        saldo = total - abono
+        ahora = datetime.now(zona_ec)
+        f_e = (ahora + timedelta(days=dias)).strftime("%d/%m/%Y")
+
+        # --- GENERADOR DE WHATSAPP (VERSIÓN ANTIRROMBOS) ---
+        e_escudo, e_check, e_maleta = "\U0001F6E1", "\u2705", "\U0001F4BC"
+        e_llave, e_bolsa, e_billete = "\U0001F6E0", "\U0001F4B0", "\U0001F4B5"
+        e_tarjeta, e_calen, e_alerta = "\U0001F4B3", "\U0001F4D3", "\u26A0"
+        e_chispas = "\u2728"
+
+        msg_wa = (
+            f"{e_escudo} *THE WARRIOR BROTHERS*\n"
+            "------------------------------------------\n"
+            f"¡Hola *{nombre.upper()}*! {e_check}\n"
+            "Confirmamos la recepción de su artículo:\n\n"
+            f"{e_maleta} *Artículo:* {articulo}\n"
+            f"{e_llave} *Trabajo:* {reparacion}\n"
+            "------------------------------------------\n"
+            f"{e_bolsa} *Total:* ${total:.2f}\n"
+            f"{e_billete} *Abono:* ${abono:.2f}\n"
+            f"{e_tarjeta} *Saldo pendiente:* *${saldo:.2f}*\n"
+            "------------------------------------------\n"
+            f"{e_calen} *Entrega estimada:* {f_e}\n\n"
+            f"{e_alerta} *NOTA IMPORTANTE:*\n"
+            "- Una vez ingresada la obra, no se realizarán devoluciones.\n"
+            "- Trabajos no retirados en 2 meses serán liquidados.\n\n"
+            f"¡Gracias por su confianza! {e_chispas}"
+        )
+
+        texto_url = urllib.parse.quote(msg_wa)
+        link_wa = f"https://api.whatsapp.com/send?phone=593{celular.lstrip('0')}&text={texto_url}"
+
+        st.success("✅ ¡Recibo generado!")
+        st.markdown(f' <a href="{link_wa}" target="_blank" style="text-decoration:none;"><div style="background-color:#25D366; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold;">📲 ENVIAR POR WHATSAPP</div></a>', unsafe_allow_html=True)
