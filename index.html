@@ -9,7 +9,7 @@
         .card { background-color: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 10px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .header-container { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #30363d; padding-bottom: 15px; margin-bottom: 20px; gap: 15px; }
         .logo-img { height: 60px; width: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #58a6ff; }
-        h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; letter-spacing: 1px; }
+        h2 { color: #58a6ff; margin: 0; font-size: 1.4em; text-align: center; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
         label { display: block; font-size: 0.8em; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
@@ -27,4 +27,62 @@
         <div class="grid">
             <div class="full-width"><label>Nombre del Cliente:</label><input type="text" id="cliente"></div>
             <div><label>WhatsApp:</label><input type="text" id="tel"></div>
-            <div><label>Entrega Estimada:</label><input type="date" id="fecha
+            <div><label>Entrega Estimada:</label><input type="date" id="fecha"></div>
+            <div class="full-width"><label>Artículo:</label><input type="text" id="articulo"></div>
+            <div class="full-width"><label>Trabajo:</label><input type="text" id="trabajo"></div>
+            <div><label>Total ($):</label><input type="number" id="total" value="0.00" step="0.01"></div>
+            <div><label>Abono ($):</label><input type="number" id="abono" value="0.00" step="0.01"></div>
+        </div>
+        <button class="btn" onclick="enviar()">GENERAR Y ENVIAR</button>
+    </div>
+
+    <script>
+        document.getElementById('fecha').valueAsDate = new Date();
+
+        function enviar() {
+            const cliente = document.getElementById('cliente').value.trim().toUpperCase();
+            const tel = document.getElementById('tel').value.trim();
+            const articulo = document.getElementById('articulo').value.trim().toLowerCase();
+            const trabajo = document.getElementById('trabajo').value.trim();
+            const total = parseFloat(document.getElementById('total').value || 0).toFixed(2);
+            const abono = parseFloat(document.getElementById('abono').value || 0).toFixed(2);
+            const saldo = (total - abono).toFixed(2);
+            const fecha = document.getElementById('fecha').value.split('-').reverse().join('/');
+
+            // Emojis en formato seguro para PC y Celular
+            const eEscudo = "🛡️";
+            const eCheck = "✅";
+            const eMartillo = "🛠️";
+            const eBolsa = "💰";
+            const eBillete = "💵";
+            const eTarjeta = "💳";
+            const eCalendario = "📅";
+            const eAlerta = "⚠️";
+            const eChispas = "✨";
+
+            // Construcción del mensaje con espacios corregidos para evitar el ">*"
+            let msg = eEscudo + " *THE WARRIOR BROTHERS*\n";
+            msg += "-------------------------------------------\n";
+            msg += "¡Hola *" + cliente + "*! " + eCheck + "\n";
+            msg += "Confirmamos la recepción de su *" + articulo + "*:\n\n";
+            msg += eMartillo + " *Trabajo:* " + trabajo + "\n";
+            msg += "-------------------------------------------\n";
+            msg += eBolsa + " *Total:* $" + total + "\n";
+            msg += eBillete + " *Abono:* $" + abono + "\n";
+            msg += eTarjeta + " *Saldo pendiente:* *$" + saldo + "*\n";
+            msg += "-------------------------------------------\n";
+            msg += eCalendario + " *Entrega estimada:* " + fecha + "\n\n";
+            msg += eAlerta + " *NOTA IMPORTANTE:*\n";
+            msg += "• No se realizarán devoluciones de abonos.\n";
+            msg += "• Trabajos no retirados en 2 meses se liquidarán.\n\n";
+            msg += "¡Gracias por su confianza! " + eChispas;
+
+            const num = tel.startsWith('0') ? tel.substring(1) : tel;
+            
+            // Forzamos la codificación total para que la PC no se invente símbolos
+            const finalURL = "https://wa.me/593" + num + "?text=" + encodeURIComponent(msg);
+            window.open(finalURL, '_blank');
+        }
+    </script>
+</body>
+</html>
