@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Conexión con Google Sheets (Lee el link desde Secrets)
+# Conexión con Google Sheets (Usa la Service Account de tus Secrets)
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # Configuración de zona horaria para Ecuador
@@ -72,10 +72,10 @@ if submit:
 
         # --- GUARDAR EN GOOGLE SHEETS ---
         try:
-            # Lee la base de datos actual (usa el URL de los Secrets)
-            df_actual = conn.read()
+            # Leemos la pestaña "Data" (asegúrate de que así se llame en tu Excel)
+            df_actual = conn.read(worksheet="Data")
             
-            # Crea la nueva fila con los nombres exactos de tus columnas
+            # Nueva fila con los nombres exactos de tus columnas
             nueva_fila = pd.DataFrame([{
                 "Fecha": f_h,
                 "Cliente": nombre.upper(),
@@ -87,13 +87,13 @@ if submit:
                 "Saldo entrega": saldo
             }])
             
-            # Une los datos y actualiza la nube
+            # Unimos los datos y actualizamos la hoja
             df_final = pd.concat([df_actual, nueva_fila], ignore_index=True)
-            conn.update(data=df_final)
+            conn.update(worksheet="Data", data=df_final)
             st.success(f"✅ ¡Datos guardados en Google Sheets para {nombre.upper()}!")
             
         except Exception as e:
-            st.error(f"⚠️ Error al conectar con Google Sheets: {e}")
+            st.error(f"⚠️ Error al guardar en la nube: {e}")
 
         # --- GENERADOR DE WHATSAPP ---
         e_zapato, e_martillo = "👞", "🔨"
