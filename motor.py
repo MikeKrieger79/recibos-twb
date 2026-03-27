@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 import urllib.parse
 import pytz
+from streamlit_gsheets import GSheetsConnection
 
 # --- CONFIGURACIÓN ---
 st.set_page_config(
@@ -10,6 +11,9 @@ st.set_page_config(
     page_icon="logo.png",
     layout="wide"
 )
+
+# Conexión con Google Sheets (Lee el link desde Secrets)
+conn = st.connection("gsheets", type=GSheetsConnection)
 
 # Configuración de zona horaria para Ecuador
 zona_ec = pytz.timezone('America/Guayaquil')
@@ -66,8 +70,30 @@ if submit:
         f_h = ahora.strftime("%d/%m/%Y %H:%M")
         f_e = fecha_entrega.strftime("%d/%m/%Y")
 
-        # Mensaje Informativo de éxito local
-        st.success(f"✅ ¡Datos procesados para {nombre.upper()}!")
+        # --- GUARDAR EN GOOGLE SHEETS ---
+        try:
+            # Lee la base de datos actual (usa el URL de los Secrets)
+            df_actual = conn.read()
+            
+            # Crea la nueva fila con los nombres exactos de tus columnas
+            nueva_fila = pd.DataFrame([{
+                "Fecha": f_h,
+                "Cliente": nombre.upper(),
+                "Celular": celular,
+                "Articulo": articulo,
+                "Reparación": reparacion,
+                "Total": total,
+                "Abono": abono,
+                "Saldo entrega": saldo
+            }])
+            
+            # Une los datos y actualiza la nube
+            df_final = pd.concat([df_actual, nueva_fila], ignore_index=True)
+            conn.update(data=df_final)
+            st.success(f"✅ ¡Datos guardados en Google Sheets para {nombre.upper()}!")
+            
+        except Exception as e:
+            st.error(f"⚠️ Error al conectar con Google Sheets: {e}")
 
         # --- GENERADOR DE WHATSAPP ---
         e_zapato, e_martillo = "👞", "🔨"
@@ -93,13 +119,10 @@ if submit:
             f"¡Gracias por su confianza! {e_chispas}"
         )
 
-        # Preparación del link para WhatsApp
         texto_url = urllib.parse.quote(msg_wa)
-        # Limpiamos el número por si ingresan el 0 inicial
         num_limpio = celular.lstrip('0')
         link_wa = f"https://api.whatsapp.com/send?phone=593{num_limpio}&text={texto_url}"
 
-        # Botón visual verde de WhatsApp
         st.markdown(f"""
             <a href="{link_wa}" target="_blank" style="text-decoration:none;">
                 <div style="background-color:#25D366; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:18px; margin-top:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
