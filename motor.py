@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import urllib.parse
 import pytz
 from streamlit_gsheets import GSheetsConnection
@@ -11,14 +11,8 @@ st.set_page_config(
     page_icon="logo.png",
     layout="wide"
 )
-
-# Conexión con Google Sheets (Lee el link desde Secrets)
-conn = st.connection("gsheets", type=GSheetsConnection)
-
-# Configuración de zona horaria para Ecuador
 zona_ec = pytz.timezone('America/Guayaquil')
 hoy_ecuador = datetime.now(zona_ec).date()
-
 # --- 1. SEGURIDAD ---
 if "autenticado" not in st.session_state:
     st.session_state["autenticado"] = False
@@ -46,8 +40,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-# Formulario de entrada
 with st.form("form_warrior", clear_on_submit=True):
     col1, col2 = st.columns(2)
     with col1:
@@ -58,9 +50,10 @@ with st.form("form_warrior", clear_on_submit=True):
         reparacion = st.text_input("🛠️ Reparación a realizar:")
         total = st.number_input("💰 Total ($):", min_value=0.0)
         abono = st.number_input("💵 Abono ($):", min_value=0.0)
+        # CAMBIO AQUÍ: Ahora es un calendario, no un número
         fecha_entrega = st.date_input("📅 Fecha de entrega:", value=hoy_ecuador, min_value=hoy_ecuador)
     
-    submit = st.form_submit_button("💾 GENERAR RECIBO")
+    submit = st.form_submit_button("💾 GUARDAR Y GENERAR RECIBO")
 
 if submit:
     if nombre and celular:
@@ -68,70 +61,91 @@ if submit:
         saldo = total - abono
         ahora = datetime.now(zona_ec)
         f_h = ahora.strftime("%d/%m/%Y %H:%M")
+        # Tomamos la fecha del calendario y la ponemos en formato día/mes/año
         f_e = fecha_entrega.strftime("%d/%m/%Y")
 
-        # --- GUARDAR EN GOOGLE SHEETS ---
+        nueva_fila = pd.DataFrame([{
+            "Fecha": f_h,
+            "Cliente": nombre.upper(),
+            "Celular": celular,
+            "Articulo": articulo,
+            "Reparacion": reparacion,
+            "Total": f"{total:.2f}",
+            "Abono": f"{abono:.2f}",
+            "Saldo": f"{saldo:.2f}",
+            "Entrega": f_e
+        }])
+
+        # --- CONEXIÓN A GOOGLE SHEETS ---
         try:
-            # Lee la base de datos actual (usa el URL de los Secrets)
-            df_actual = conn.read()
-            
-            # Crea la nueva fila con los nombres exactos de tus columnas
-            nueva_fila = pd.DataFrame([{
-                "Fecha": f_h,
-                "Cliente": nombre.upper(),
-                "Celular": celular,
-                "Articulo": articulo,
-                "Reparación": reparacion,
-                "Total": total,
-                "Abono": abono,
-                "Saldo entrega": saldo
-            }])
-            
-            # Une los datos y actualiza la nube
+            conn = st.connection("gsheets", type=GSheetsConnection)
+            try:
+                df_actual = conn.read(worksheet="Data", ttl=0)
+                df_actual = df_actual.loc[:, ~df_actual.columns.str.contains('^Unnamed')]
+            except Exception:
+                df_actual = pd.DataFrame()
+
             df_final = pd.concat([df_actual, nueva_fila], ignore_index=True)
-            conn.update(data=df_final)
-            st.success(f"✅ ¡Datos guardados en Google Sheets para {nombre.upper()}!")
-            
+            conn.update(worksheet="Data", data=df_final)
+
+            st.success(f"✅ ¡Guardado en Excel para el {f_e}!")
+
+  # --- GENERADOR DE WHATSAPP (ORDEN: ZAPATO + MARTILLO) ---
+            # El zapato primero para la identidad, luego el martillo para el oficio
+            e_zapato, e_martillo = "\U0001F45E", "\U0001F528"
+            e_check = "\u2705"
+            e_llave, e_bolsa, e_billete = "\U0001F6E0", "\U0001F4B0", "\U0001F4B5"
+            e_tarjeta, e_calen, e_alerta, e_chispas = "\U0001F4B3", "\U0001F4D3", "\u26A0", "\u2728"
+
+            # El encabezado ahora fluye: Zapatería -> Herramientas -> Nombre
+            msg_wa = (
+                f"{e_zapato}{e_martillo} *THE WARRIOR BROTHERS*\n"
+                "------------------------------------------\n"
+                f"¡Hola *{nombre.upper()}*! {e_check}\n"
+                f"Confirmamos la recepción de su *{articulo.lower()}*:\n\n"
+                f"{e_llave} *Trabajo:* {reparacion}\n"
+                "------------------------------------------\n"
+                f"{e_bolsa} *Total:* ${total:.2f}\n"
+                f"{e_billete} *Abono:* ${abono:.2f}\n"
+                f"{e_tarjeta} *Saldo pendiente:* *${saldo:.2f}*\n"
+                "------------------------------------------\n"
+                f"{e_calen} *Entrega estimada:* {f_e}\n\n"
+                f"{e_alerta} *NOTA IMPORTANTE:*\n"
+                "- Una vez ingresada la obra, no se realizarán devoluciones.\n"
+                "- Trabajos no retirados en 2 meses serán liquidados.\n\n"
+                f"¡Gracias por su confianza! {e_chispas}"
+            )
+
+            # Preparación del link para WhatsApp
+            import urllib.parse
+            texto_url = urllib.parse.quote(msg_wa)
+            link_wa = f"https://api.whatsapp.com/send?phone=593{celular.lstrip('0')}&text={texto_url}"
+
+            # Botón visual verde de WhatsApp
+            st.markdown(f"""
+                <a href="{link_wa}" target="_blank" style="text-decoration:none;">
+                    <div style="background-color:#25D366; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:18px; margin-top:20px;">
+                        📲 ENVIAR RECIBO POR WHATSAPP
+                    </div>
+                </a>
+            """, unsafe_allow_html=True)
+            # Preparación del link para WhatsApp
+            import urllib.parse
+            texto_url = urllib.parse.quote(msg_wa)
+            link_wa = f"https://api.whatsapp.com/send?phone=593{celular.lstrip('0')}&text={texto_url}"
+
+            # Botón visual verde de WhatsApp
+            st.markdown(f"""
+                <a href="{link_wa}" target="_blank" style="text-decoration:none;">
+                    <div style="background-color:#25D366; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:18px; margin-top:20px;">
+                        📲 ENVIAR RECIBO POR WHATSAPP
+                    </div>
+                </a>
+            """, unsafe_allow_html=True)
+
         except Exception as e:
-            st.error(f"⚠️ Error al conectar con Google Sheets: {e}")
-
-        # --- GENERADOR DE WHATSAPP ---
-        e_zapato, e_martillo = "👞", "🔨"
-        e_check = "✅"
-        e_llave, e_bolsa, e_billete = "🛠️", "💰", "💵"
-        e_tarjeta, e_calen, e_alerta, e_chispas = "💳", "📅", "⚠️", "✨"
-
-        msg_wa = (
-            f"{e_zapato}{e_martillo} *THE WARRIOR BROTHERS*\n"
-            "------------------------------------------\n"
-            f"¡Hola *{nombre.upper()}*! {e_check}\n"
-            f"Confirmamos la recepción de su *{articulo.lower()}*:\n\n"
-            f"{e_llave} *Trabajo:* {reparacion}\n"
-            "------------------------------------------\n"
-            f"{e_bolsa} *Total:* ${total:.2f}\n"
-            f"{e_billete} *Abono:* ${abono:.2f}\n"
-            f"{e_tarjeta} *Saldo pendiente:* *${saldo:.2f}*\n"
-            "------------------------------------------\n"
-            f"{e_calen} *Entrega estimada:* {f_e}\n\n"
-            f"{e_alerta} *NOTA IMPORTANTE:*\n"
-            "- Una vez ingresada la obra, no se realizarán devoluciones.\n"
-            "- Trabajos no retirados en 2 meses serán liquidados.\n\n"
-            f"¡Gracias por su confianza! {e_chispas}"
-        )
-
-        texto_url = urllib.parse.quote(msg_wa)
-        num_limpio = celular.lstrip('0')
-        link_wa = f"https://api.whatsapp.com/send?phone=593{num_limpio}&text={texto_url}"
-
-        st.markdown(f"""
-            <a href="{link_wa}" target="_blank" style="text-decoration:none;">
-                <div style="background-color:#25D366; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:18px; margin-top:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                    📲 ENVIAR RECIBO POR WHATSAPP
-                </div>
-            </a>
-        """, unsafe_allow_html=True)
+            st.error(f"❌ Error de conexión: {e}")
+            st.info("Asegúrate de configurar los 'Secrets' en Streamlit para Google Sheets.")
 
     else:
         st.error("⚠️ Por favor completa el nombre y el celular.")
-
-st.markdown("<br><center style='color: #888;'>© 2026 The Warrior Brothers | Loja, Ecuador 🛡️⚒️</center>", unsafe_allow_html=True)
