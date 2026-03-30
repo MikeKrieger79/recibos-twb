@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, time
 import urllib.parse
 import pytz
 
@@ -13,7 +13,10 @@ st.set_page_config(
 
 # Configuración de zona horaria para Ecuador
 zona_ec = pytz.timezone('America/Guayaquil')
-hoy_ecuador = datetime.now(zona_ec).date()
+ahora_ec = datetime.now(zona_ec)
+hoy_ecuador = ahora_ec.date()
+# Hora predeterminada para la entrega (ej: 4:00 PM)
+hora_default = time(16, 0)
 
 # --- 1. SEGURIDAD ---
 if "autenticado" not in st.session_state:
@@ -54,7 +57,9 @@ with st.form("form_warrior", clear_on_submit=True):
         reparacion = st.text_input("🛠️ Reparación a realizar:")
         total = st.number_input("💰 Total ($):", min_value=0.0)
         abono = st.number_input("💵 Abono ($):", min_value=0.0)
+        # Sección de entrega con Fecha y Hora
         fecha_entrega = st.date_input("📅 Fecha de entrega:", value=hoy_ecuador, min_value=hoy_ecuador)
+        hora_entrega = st.time_input("🕒 Hora de entrega:", value=hora_default)
     
     submit = st.form_submit_button("💾 GENERAR RECIBO")
 
@@ -65,12 +70,14 @@ if submit:
         ahora = datetime.now(zona_ec)
         f_h = ahora.strftime("%d/%m/%Y %H:%M")
         f_e = fecha_entrega.strftime("%d/%m/%Y")
+        h_e = hora_entrega.strftime("%I:%M %p") # Formato 12 horas (AM/PM)
 
         # --- GENERADOR DE WHATSAPP ---
         e_zapato, e_martillo = "👞", "🔨"
         e_check = "✅"
         e_llave, e_bolsa, e_billete = "🛠️", "💰", "💵"
         e_tarjeta, e_calen, e_alerta, e_chispas = "💳", "📅", "⚠️", "✨"
+        e_reloj = "🕒"
 
         msg_wa = (
             f"{e_zapato}{e_martillo} *THE WARRIOR BROTHERS*\n"
@@ -83,7 +90,8 @@ if submit:
             f"{e_billete} *Abono:* ${abono:.2f}\n"
             f"{e_tarjeta} *Saldo pendiente:* *${saldo:.2f}*\n"
             "------------------------------------------\n"
-            f"{e_calen} *Entrega estimada:* {f_e}\n\n"
+            f"{e_calen} *Entrega estimada:* {f_e}\n"
+            f"{e_reloj} *A partir de las:* {h_e}\n\n"
             f"{e_alerta} *NOTA IMPORTANTE:*\n"
             "- Una vez ingresada la obra, no se realizarán devoluciones.\n"
             "- Trabajos no retirados en 2 meses serán liquidados.\n\n"
