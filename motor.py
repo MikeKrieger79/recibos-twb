@@ -72,13 +72,13 @@ if submit:
         f_e = fecha_entrega.strftime("%d/%m/%Y")
         h_e = hora_entrega.strftime("%I:%M %p") # Formato 12 horas (AM/PM)
 
-        # --- GENERADOR DE MENSAJE WHATSAPP CON REDES SOCIALES ---
+        # --- GENERADOR DE MENSAJE WHATSAPP (ESTILO LIMPIO) ---
         e_zapato, e_martillo = "👞", "🔨"
         e_check = "✅"
         e_llave, e_bolsa, e_billete = "🛠️", "💰", "💵"
         e_tarjeta, e_calen, e_alerta, e_chispas = "💳", "📅", "⚠️", "✨"
         e_reloj = "🕒"
-        e_camara, e_musica, e_user = "📸", "🎵", "👤"
+        e_f, e_i, e_t = "🔵", "📸", "🎬"
 
         msg_wa = (
             f"{e_zapato}{e_martillo} *THE WARRIOR BROTHERS*\n"
@@ -96,11 +96,11 @@ if submit:
             f"{e_alerta} *NOTA IMPORTANTE:*\n"
             "- Una vez ingresada la obra, no se realizarán devoluciones.\n"
             "- Trabajos no retirados en 2 meses serán liquidados.\n\n"
-            f"{e_chispas} *¡SÍGUENOS EN NUESTRAS REDES!* {e_chispas}\n"
-            f"{e_user} *Facebook:* https://www.facebook.com/TheWarriorBrothersLoja\n"
-            f"{e_camara} *Instagram:* https://www.instagram.com/thewarriorbrothers2023\n"
-            f"{e_musica} *TikTok:* https://www.tiktok.com/@the.warrior.broth\n\n"
-            f"¡Gracias por su confianza! 🛡️⚒️"
+            f"{e_chispas} *ENCUÉNTRANOS AQUÍ:* {e_chispas}\n"
+            f"{e_f} Facebook: facebook.com/TheWarriorBrothersLoja\n"
+            f"{e_i} Instagram: @thewarriorbrothers2023\n"
+            f"{e_t} TikTok: @the.warrior.broth\n\n"
+            "¡Gracias por su confianza! 🛡️⚒️"
         )
 
         texto_url = urllib.parse.quote(msg_wa)
@@ -111,7 +111,7 @@ if submit:
         st.markdown(f"""
             <a href="{link_wa}" target="_blank" style="text-decoration:none;">
                 <div style="background-color:#25D366; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:18px; margin-top:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                    📲 ENVIAR RECIBO Y REDES POR WHATSAPP
+                    📲 ENVIAR RECIBO POR WHATSAPP
                 </div>
             </a>
         """, unsafe_allow_html=True)
