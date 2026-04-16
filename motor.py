@@ -81,7 +81,7 @@ if submit:
             f"⚠️ *NOTA IMPORTANTE:*\n"
             f"- Una vez ingresada la obra, no se realizarán devoluciones.\n"
             f"- Trabajos no retirados en 2 meses serán liquidados.\n\n"
-            f"✨ *¡SÍGUENOS!* ✨\n"
+            f"✨ *¡SÍGUENOS EN NUESTRAS REDES!* ✨\n"
             f"🔵 facebook.com/TheWarriorBrothersLoja\n"
             f"📸 instagram.com/thewarriorbrothers2023\n"
             f"🎬 tiktok.com/@the.warrior.broth\n\n"
