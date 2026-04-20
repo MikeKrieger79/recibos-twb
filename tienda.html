@@ -2,64 +2,166 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Warrior Brothers | Maestría en Calzado</title>
     <style>
-        /* Estilo para que se vea elegante y oscuro */
+        :root {
+            --gold: #FFD700;
+            --dark-bg: #0e1117;
+            --card-bg: #161b22;
+        }
+
         body {
-            background-color: #0e1117;
+            background-color: var(--dark-bg);
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             margin: 0;
             text-align: center;
         }
 
-        /* Encabezado Horizontal (Logo + Título) */
+        /* Header */
         .header-container {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 40px;
-            gap: 30px;
-        }
-
-        .logo-img {
-            width: 120px; /* Ajustable según tu logo */
+            gap: 20px;
         }
 
         .main-title {
-            font-size: 4rem;
+            font-size: clamp(2rem, 8vw, 4rem);
             font-weight: 900;
-            color: #FFD700; /* Dorado */
+            color: var(--gold);
             text-transform: uppercase;
             margin: 0;
         }
 
-        /* Espacio para el Slider de Antes y Después */
+        /* Slider de Antes y Después */
         .slider-section {
-            padding: 60px 20px;
-            background: #161b22;
+            padding: 40px 20px;
+            background: var(--card-bg);
         }
 
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+        .comparison-slider {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            margin: 20px auto;
+            overflow: hidden;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+        }
+
+        .comparison-slider img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .img-before {
+            z-index: 1;
+        }
+
+        .img-after {
+            z-index: 2;
+            width: 50%; /* Este valor cambiará con el JS */
+            border-right: 3px solid var(--gold);
+        }
+
+        /* Formulario de Registro (Backend Ready) */
+        .admin-section {
+            padding: 60px 20px;
+        }
+
+        .order-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #1c2128;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0e1117;
+            border: 1px solid #30363d;
+            color: white;
+            border-radius: 6px;
+        }
+
+        button {
+            background: var(--gold);
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <header class="header-container">
-        <div class="logo-placeholder">🐺</div> 
+        <div style="font-size: 50px;">🐺</div> 
         <h1 class="main-title">The Warrior Brothers</h1>
     </header>
 
     <section class="slider-section">
-        <h2 class="section-title">Cirugía Estética para tu Calzado Premium</h2>
-        <p>Desliza para ver la transformación</p>
-        <div id="slider-container">
-            [Espacio para el Slider Interactivo]
+        <h2 style="color: var(--gold);">Cirugía Estética</h2>
+        <p>Desliza sobre la imagen para ver el proceso</p>
+        
+        <div class="comparison-slider" id="slider">
+            <img src="https://via.placeholder.com/600x400/333/fff?text=ANTES" class="img-before">
+            <div class="img-after" id="after-div">
+                <img src="https://via.placeholder.com/600x400/FFD700/000?text=DESPUES">
+            </div>
         </div>
     </section>
+
+    <section class="admin-section">
+        <h3>Registro de Nueva Orden</h3>
+        <div class="order-form">
+            <label>Cliente</label>
+            <input type="text" placeholder="Nombre completo">
+            <label>Servicio</label>
+            <select>
+                <option>Cambio de Suela</option>
+                <option>Limpieza Premium</option>
+                <option>Restauración de Color</option>
+                <option>Costura Especial</option>
+            </select>
+            <button onclick="alert('Orden registrada localmente')">Generar Ticket</button>
+        </div>
+    </section>
+
+    <script>
+        // Lógica simple para el slider interactivo
+        const slider = document.getElementById('slider');
+        const afterDiv = document.getElementById('after-div');
+
+        slider.addEventListener('mousemove', (e) => {
+            const rect = slider.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percent = (x / rect.width) * 100;
+            afterDiv.style.width = percent + '%';
+        });
+
+        // Soporte para móviles
+        slider.addEventListener('touchmove', (e) => {
+            const rect = slider.getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left;
+            const percent = (x / rect.width) * 100;
+            afterDiv.style.width = percent + '%';
+        });
+    </script>
 
 </body>
 </html>
