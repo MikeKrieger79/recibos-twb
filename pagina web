@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>The Warrior Brothers | Maestría en Calzado</title>
+    <style>
+        /* Estilo para que se vea elegante y oscuro */
+        body {
+            background-color: #0e1117;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Encabezado Horizontal (Logo + Título) */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            gap: 30px;
+        }
+
+        .logo-img {
+            width: 120px; /* Ajustable según tu logo */
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #FFD700; /* Dorado */
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        /* Espacio para el Slider de Antes y Después */
+        .slider-section {
+            padding: 60px 20px;
+            background: #161b22;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-container">
+        <div class="logo-placeholder">🐺</div> 
+        <h1 class="main-title">The Warrior Brothers</h1>
+    </header>
+
+    <section class="slider-section">
+        <h2 class="section-title">Cirugía Estética para tu Calzado Premium</h2>
+        <p>Desliza para ver la transformación</p>
+        <div id="slider-container">
+            [Espacio para el Slider Interactivo]
+        </div>
+    </section>
+
+</body>
+</html>
