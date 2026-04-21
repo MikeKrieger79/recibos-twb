@@ -64,7 +64,7 @@ if submit:
         f_e = fecha_entrega.strftime("%d/%m/%Y")
         h_e = hora_entrega.strftime("%I:%M %p")
 
-        # MENSAJE LIMPIO SIN VISTA PREVIA DE ENLACE
+        # MENSAJE ACTUALIZADO CON PÁGINA WEB
         msg_wa = (
             f"👞🔨 *THE WARRIOR BROTHERS*\n"
             f"------------------------------------------\n"
@@ -78,9 +78,15 @@ if submit:
             f"------------------------------------------\n"
             f"📅 *Entrega estimada:* {f_e}\n"
             f"🕒 *A partir de las:* {h_e}\n\n"
+            
+            f"🌐 *VISITA NUESTRA WEB PROFESIONAL:* ✨\n"
+            f"Mira nuestros trabajos de Alta Gama aquí:\n"
+            f"👉 https://warriorbrothersloja.mystrikingly.com/\n\n"
+            
             f"⚠️ *NOTA IMPORTANTE:*\n"
             f"- Una vez ingresada la obra, no se realizarán devoluciones.\n"
             f"- Trabajos no retirados en 2 meses serán liquidados.\n\n"
+            
             f"✨ *¡SÍGUENOS EN NUESTRAS REDES!* ✨\n"
             f"🔵 facebook.com/TheWarriorBrothersLoja\n"
             f"📸 instagram.com/thewarriorbrothers2023\n"
@@ -95,7 +101,7 @@ if submit:
         st.markdown(f"""
             <a href="{link_wa}" target="_blank" style="text-decoration:none;">
                 <div style="background-color:#25D366; color:white; padding:15px; border-radius:10px; text-align:center; font-weight:bold;">
-                    📲 ENVIAR RECIBO LIMPIO
+                    📲 ENVIAR RECIBO Y WEB
                 </div>
             </a>
         """, unsafe_allow_html=True)
