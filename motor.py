@@ -62,11 +62,14 @@ with st.form("form_warrior"):
 # --- 4. PROCESAMIENTO Y GENERACIÓN DE RECIBO ---
 if submit:
     if not nombre or not celular or not articulo:
-        st.error("⚠️ Por favor completa los campos obligatorios: Cliente, WhatsApp y Artículo.")
+        st.error(
+            "⚠️ Por favor completa los campos obligatorios: Cliente, WhatsApp y"
+            " Artículo."
+        )
     elif abono > total:
         st.warning("⚠️ El abono no puede ser mayor que el total.")
     else:
-        # Limpieza estricta del número de teléfono (deja solo dígitos)
+        # Limpieza de caracteres no numéricos del teléfono
         num_digitos = re.sub(r"\D", "", celular)
 
         # Normalización para Ecuador (+593)
@@ -81,6 +84,7 @@ if submit:
         f_e = fecha_entrega.strftime("%d/%m/%Y")
         h_e = hora_entrega.strftime("%I:%M %p")
 
+        # Mensaje con Facebook en primer lugar para la vista previa de WhatsApp
         msg_wa = (
             f"👞🔨 *THE WARRIOR BROTHERS*\n"
             f"------------------------------------------\n"
@@ -94,14 +98,14 @@ if submit:
             f"------------------------------------------\n"
             f"📅 *Entrega estimada:* {f_e}\n"
             f"🕒 *A partir de las:* {h_e}\n\n"
-            f"🌐 *VISITA NUESTRA WEB PROFESIONAL:* ✨\n"
-            f"Mira nuestros trabajos de Alta Gama aquí:\n"
-            f"👉 https://warriorbrothersloja.mystrikingly.com/\n\n"
+            f"👍 *¡SÍGUENOS EN FACEBOOK!* ✨\n"
+            f"Mira nuestros trabajos de Alta Gama y novedades aquí:\n"
+            f"👉 https://www.facebook.com/TheWarriorBrothersLoja\n\n"
+            f"🌐 *Página Web:* https://warriorbrothersloja.mystrikingly.com/\n\n"
             f"⚠️ *NOTA IMPORTANTE:*\n"
             f"- Una vez ingresada la obra, no se realizarán devoluciones.\n"
             f"- Trabajos no retirados en 2 meses serán liquidados.\n\n"
-            f"✨ *¡SÍGUENOS EN NUESTRAS REDES!* ✨\n"
-            f"🔵 facebook.com/TheWarriorBrothersLoja\n"
+            f"✨ *OTRAS REDES:* ✨\n"
             f"📸 instagram.com/thewarriorbrothers2023\n"
             f"🎬 tiktok.com/@the.warrior.broth\n\n"
             f"¡Gracias por su confianza! 🛡️⚒️"
@@ -110,12 +114,15 @@ if submit:
         texto_url = urllib.parse.quote(msg_wa)
         link_wa = f"https://api.whatsapp.com/send?phone={num_final}&text={texto_url}"
 
-        # Guardar en estado de sesión para persistencia visual
+        # Guardar estado para que el botón no desaparezca
         st.session_state["ultimo_link"] = link_wa
         st.session_state["ultimo_cliente"] = nombre.strip().upper()
 
+# Mostrar el botón si hay un recibo generado recientemente
 if "ultimo_link" in st.session_state:
-    st.success(f"Recibo listo para **{st.session_state['ultimo_cliente']}**")
+    st.success(
+        f"✅ Recibo listo para enviar a **{st.session_state['ultimo_cliente']}**"
+    )
     st.markdown(
         f"""
         <a href="{st.session_state['ultimo_link']}" target="_blank" style="text-decoration:none;">
@@ -128,6 +135,8 @@ if "ultimo_link" in st.session_state:
     )
 
 st.markdown(
-    "<br><hr><center style='color: #888;'>© 2026 The Warrior Brothers | Loja, Ecuador 🛡️⚒️</center>",
+    "<br><hr><center style='color: #888;'>© 2026 The Warrior Brothers | Loja,"
+    " Ecuador 🛡️⚒️</center>",
     unsafe_allow_html=True,
 )
+    
