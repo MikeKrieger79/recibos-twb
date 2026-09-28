@@ -84,7 +84,7 @@ if submit:
         f_e = fecha_entrega.strftime("%d/%m/%Y")
         h_e = hora_entrega.strftime("%I:%M %p")
 
-        # Mensaje con Facebook en primer lugar para la vista previa de WhatsApp
+        # Mensaje con la estructura solicitada (Domicilio, Web, Redes, Nota y Agradecimiento)
         msg_wa = (
             f"👞🔨 *THE WARRIOR BROTHERS*\n"
             f"------------------------------------------\n"
@@ -98,17 +98,18 @@ if submit:
             f"------------------------------------------\n"
             f"📅 *Entrega estimada:* {f_e}\n"
             f"🕒 *A partir de las:* {h_e}\n\n"
-            f"👍 *¡SÍGUENOS EN FACEBOOK!* ✨\n"
-            f"Mira nuestros trabajos de Alta Gama y novedades aquí:\n"
-            f"👉 https://www.facebook.com/TheWarriorBrothersLoja\n\n"
-            f"🌐 *Página Web:* https://warriorbrothersloja.mystrikingly.com/\n\n"
+            f"🛵 *¡HACEMOS ENTREGAS A DOMICILIO!* 📦\n"
+            f"Coordinamos el retiro y la entrega de tus artículos para tu mayor comodidad.\n\n"
+            f"🌐 *Visita nuestra Página Web:*\n"
+            f"👉 https://warriorbrothersloja.mystrikingly.com/\n\n"
+            f"📱 *Síguenos en nuestras Redes Sociales:*\n"
+            f"• 📘 Facebook: https://www.facebook.com/TheWarriorBrothersLoja\n"
+            f"• 📸 Instagram: https://instagram.com/thewarriorbrothers2023\n"
+            f"• 🎵 TikTok: https://tiktok.com/@the.warrior.broth\n\n"
             f"⚠️ *NOTA IMPORTANTE:*\n"
             f"- Una vez ingresada la obra, no se realizarán devoluciones.\n"
             f"- Trabajos no retirados en 2 meses serán liquidados.\n\n"
-            f"✨ *OTRAS REDES:* ✨\n"
-            f"📸 instagram.com/thewarriorbrothers2023\n"
-            f"🎬 tiktok.com/@the.warrior.broth\n\n"
-            f"¡Gracias por su confianza! 🛡️⚒️"
+            f"✨ *¡Gracias por su confianza!* 🛡️⚒️"
         )
 
         texto_url = urllib.parse.quote(msg_wa)
